@@ -1,7 +1,13 @@
-FROM scratch
-MAINTAINER Kris Budde <Kris.Budde@gmail.com>
+FROM quay.io/prometheus/golang-builder as builder
 
-COPY rabbitmq_exporter /
+ADD .   /go/src/github.com/kbudde/rabbitmq_exporter
+WORKDIR /go/src/github.com/kbudde/rabbitmq_exporter
+
+RUN make
+
+FROM scratch
+
+COPY --from=builder /go/src/github.com/kbudde/rabbitmq_exporter/rabbitmq_exporter  /rabbitmq_exporter
 
 EXPOSE      9090
 
